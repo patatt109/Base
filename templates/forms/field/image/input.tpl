@@ -1,7 +1,7 @@
 <input type="file" accept="{$field->getHtmlAccept()}" value="{$value}" id="{$id}" name="{$name}" {raw $html}>
 
 {if $value}
-    <a class="current-image" style="background-image: url('{$field->getSizeImage()}')" href="{$field->getOriginalImage()}"></a>
+    <a href="{$field->getCurrentFileUrl()}">{$field->getCurrentFileName()}</a>
 {/if}
 
 {if $field->canClear()}
