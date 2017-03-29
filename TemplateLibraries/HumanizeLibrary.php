@@ -43,4 +43,36 @@ class HumanizeLibrary extends TemplateLibrary
         }
         return $converted . $message;
     }
+
+    /**
+     * @name plural
+     * @kind modifier
+     * @return string
+     */
+    public static function plural($forms, $num)
+    {
+        $forms = explode('|', $forms);
+        if ($num == 0) {
+            return $forms[2];
+        }
+
+        $value = $num % 100;
+
+        if ($value == 0) {
+            return $forms[2];
+        }
+
+        if ($value > 10 && $value < 20)
+            return $forms[2];
+        else
+        {
+            $value = $num % 10;
+            if ($value == 1)
+                return $forms[0];
+            else if ($value > 1 && $value < 5)
+                return $forms[1];
+            else
+                return $forms[2];
+        }
+    }
 }

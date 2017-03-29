@@ -80,6 +80,7 @@ class DbCommand extends Command
     public static function sync()
     {
         $command = new DbCommand();
+        $command->silent = true;
         $command->handle();
     }
 }
