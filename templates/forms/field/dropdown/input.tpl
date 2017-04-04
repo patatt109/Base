@@ -1,11 +1,12 @@
-<select name="{$name}" id="{$id}" {raw $html}>
+<select name="{$name}" id="{$id}" {if $field->multiple}multiple="multiple"{/if} {raw $html}>
     {if $field->emptyText}
         <option value="">
             {$field->emptyText}
         </option>
     {/if}
     {foreach $field->choices as $key => $name}
-        <option value="{$key}" {if $key == $value}selected="selected"{/if}>
+        {var $selected = $.php.is_array($value) ? ($key|in:$value) : ($key == $value)}
+        <option value="{$key}" {if $selected}selected="selected"{/if}>
             {$name}
         </option>
     {/foreach}
