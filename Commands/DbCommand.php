@@ -27,6 +27,8 @@ class DbCommand extends Command
 {
     public $modelsFolder = 'Models';
 
+    public $silent = false;
+
     public function handle($arguments = [])
     {
         $modulesPath = Paths::get('Modules');
@@ -54,20 +56,31 @@ class DbCommand extends Command
             }
         }
         foreach ($models as $model) {
-            echo $this->color($model->className(), 'green', 'black');
-            echo ' ';
-            $result = $tableManager->createModelTable($model);
-            if ($result->errorCode() == '00000') {
-                echo $this->color('✓', 'grey', 'black');
-            } else {
-                echo $this->color('✓', 'red', 'black');
+            if (!$this->silent) {
+                echo $this->color($model->className(), 'green', 'black');
+                echo ' ';
             }
-            echo PHP_EOL;
+            $result = $tableManager->createModelTable($model);
+            if (!$this->silent) {
+                if ($result->errorCode() == '00000') {
+                    echo $this->color('✓', 'grey', 'black');
+                } else {
+                    echo $this->color('✓', 'red', 'black');
+                }
+                echo PHP_EOL;
+            }
         }
     }
 
     public function getDescription()
     {
         return 'Sync models with database';
+    }
+
+    public static function sync()
+    {
+        $command = new DbCommand();
+        $command->silent = true;
+        $command->handle();
     }
 }
