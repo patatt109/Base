@@ -84,7 +84,7 @@
         {foreach $trace as $item}
             <div class="file">
                 <table class="info">
-                    {if $item.trace.class}
+                    {if $item.trace and $item.trace.class}
                         <tr>
                             <td class="name">
                                 Class:
@@ -99,7 +99,7 @@
                             File:
                         </td>
                         <td class="value">
-                            {$item.trace.file}
+                            {$item.fileName}
                         </td>
                     </tr>
                 </table>
