@@ -19,15 +19,6 @@ use Phact\Template\TemplateLibrary;
 
 class StaticLibrary extends TemplateLibrary
 {
-    protected static function getFrontendVersionsDir()
-    {
-        return Paths::get('www.static.frontend.versions');
-    }
-
-    protected static function getBackendVersionsDir()
-    {
-        return Paths::get('www.static.backend.versions');
-    }
 
     protected static function getVersionFromContent($content)
     {
@@ -53,7 +44,7 @@ class StaticLibrary extends TemplateLibrary
      */
     public static function getFrontendCssVersion()
     {
-        return self::getVersion(self::getFrontendVersionsDir() . DIRECTORY_SEPARATOR . 'css.yml');
+        return self::getVersion(Paths::file('www.static.frontend.dist.css.version', 'yml'));
     }
 
     /**
@@ -63,7 +54,7 @@ class StaticLibrary extends TemplateLibrary
      */
     public static function getFrontendJsVersion()
     {
-        return self::getVersion(self::getFrontendVersionsDir() . DIRECTORY_SEPARATOR . 'js.yml');
+        return self::getVersion(Paths::file('www.static.frontend.dist.js.version', 'yml'));
     }
 
     /**
@@ -73,7 +64,7 @@ class StaticLibrary extends TemplateLibrary
      */
     public static function getBackendCssVersion()
     {
-        return self::getVersion(self::getBackendVersionsDir() . DIRECTORY_SEPARATOR . 'css.yml');
+        return self::getVersion(Paths::file('www.static.backend.dist.css.version', 'yml'));
     }
 
     /**
@@ -83,6 +74,6 @@ class StaticLibrary extends TemplateLibrary
      */
     public static function getBackendJsVersion()
     {
-        return self::getVersion(self::getBackendVersionsDir() . DIRECTORY_SEPARATOR . 'js.yml');
+        return self::getVersion(Paths::file('www.static.backend.dist.js.version', 'yml'));
     }
 }
