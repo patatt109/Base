@@ -76,4 +76,14 @@ class CommonLibrary extends TemplateLibrary
     {
         return new Pagination($provider, $options);
     }
+
+    /**
+     * @name is_debug
+     * @kind accessorProperty
+     * @return bool
+     */
+    public static function isDebug()
+    {
+        return defined('DEBUG') && DEBUG;
+    }
 }
