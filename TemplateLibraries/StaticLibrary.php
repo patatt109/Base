@@ -14,66 +14,63 @@
 
 namespace Modules\Base\TemplateLibraries;
 
+use DirectoryIterator;
 use Phact\Helpers\Paths;
 use Phact\Template\TemplateLibrary;
 
 class StaticLibrary extends TemplateLibrary
 {
-
-    protected static function getVersionFromContent($content)
+    /**
+     * @kind accessorFunction
+     * @name frontend_css_file
+     * @return int|void
+     */
+    public static function getFrontendCssFile($name)
     {
-        $space = strpos($content, ' ');
-        if ($space !== false) {
-            return substr($content, 0, $space);
+        return self::getFileName(Paths::get('static.frontend.dist.css'), $name);
+    }
+
+    /**
+     * @kind accessorFunction
+     * @name frontend_js_file
+     * @return int|void
+     */
+    public static function getFrontendJsFile($name)
+    {
+        return self::getFileName(Paths::get('static.frontend.dist.js'), $name);
+    }
+
+    /**
+     * @kind accessorFunction
+     * @name backend_css_file
+     * @return int|void
+     */
+    public static function getBackendCssFile($name)
+    {
+        return self::getFileName(Paths::get('static.backend.dist.css'), $name);
+    }
+
+    /**
+     * @kind accessorFunction
+     * @name backend_js_file
+     * @return int|void
+     */
+    public static function getBackendJsFile($name)
+    {
+        return self::getFileName(Paths::get('static.backend.dist.js'), $name);
+    }
+
+    public static function getFileName($dir, $name)
+    {
+        $dir = new DirectoryIterator($dir);
+        foreach ($dir as $fileinfo) {
+            if (!$fileinfo->isDot()) {
+                $filename = $fileinfo->getFilename();
+                $cleanName = mb_substr($filename, 0, mb_strrpos($filename, '-', null, 'UTF-8'), 'UTF-8');
+                if ($cleanName == $name) {
+                    return $fileinfo->getFilename();
+                }
+            }
         }
-        return null;
-    }
-
-    protected static function getVersion($file, $default = 1)
-    {
-        if (is_file($file) && ($content = file_get_contents($file)) && ($version = self::getVersionFromContent($content))) {
-            return $version;
-        }
-        return $default;
-    }
-
-    /**
-     * @kind function
-     * @name frontend_css_version
-     * @return int|void
-     */
-    public static function getFrontendCssVersion()
-    {
-        return self::getVersion(Paths::file('www.static.frontend.dist.css.version', 'yml'));
-    }
-
-    /**
-     * @kind function
-     * @name frontend_js_version
-     * @return int|void
-     */
-    public static function getFrontendJsVersion()
-    {
-        return self::getVersion(Paths::file('www.static.frontend.dist.js.version', 'yml'));
-    }
-
-    /**
-     * @kind function
-     * @name backend_css_version
-     * @return int|void
-     */
-    public static function getBackendCssVersion()
-    {
-        return self::getVersion(Paths::file('www.static.backend.dist.css.version', 'yml'));
-    }
-
-    /**
-     * @kind function
-     * @name backend_js_version
-     * @return int|void
-     */
-    public static function getBackendJsVersion()
-    {
-        return self::getVersion(Paths::file('www.static.backend.dist.js.version', 'yml'));
     }
 }
