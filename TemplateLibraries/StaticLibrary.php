@@ -16,10 +16,13 @@ namespace Modules\Base\TemplateLibraries;
 
 use DirectoryIterator;
 use Phact\Helpers\Paths;
+use Phact\Template\Renderer;
 use Phact\Template\TemplateLibrary;
 
 class StaticLibrary extends TemplateLibrary
 {
+    use Renderer;
+
     /**
      * @kind accessorFunction
      * @name frontend_css_file
@@ -67,7 +70,8 @@ class StaticLibrary extends TemplateLibrary
             if (!$fileinfo->isDot()) {
                 $filename = $fileinfo->getFilename();
                 $cleanName = mb_substr($filename, 0, mb_strrpos($filename, '-', null, 'UTF-8'), 'UTF-8');
-                if ($cleanName == $name) {
+                $rawName = mb_substr($filename, 0, mb_strrpos($filename, '.', null, 'UTF-8'), 'UTF-8');
+                if ($cleanName == $name || $rawName == $name) {
                     return $fileinfo->getFilename();
                 }
             }

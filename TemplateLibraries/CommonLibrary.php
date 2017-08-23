@@ -53,6 +53,19 @@ class CommonLibrary extends TemplateLibrary
     }
 
     /**
+     * @name icon
+     * @kind function
+     * @return string
+     */
+    public static function icon($params)
+    {
+        $name = isset($params[0]) ? $params[0] : '';
+        return self::renderTemplate('base/_icon.tpl', [
+            'name' => $name
+        ]);
+    }
+
+    /**
      * @name build_url
      * @kind function
      * @return string
