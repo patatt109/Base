@@ -26,41 +26,51 @@ class StaticLibrary extends TemplateLibrary
     /**
      * @kind accessorFunction
      * @name frontend_css_file
-     * @return int|void
+     * @return string|null
      */
     public static function getFrontendCssFile($name)
     {
-        return self::getFileName(Paths::get('static.frontend.dist.css'), $name);
+        return self::getStaticFile('static.frontend.dist.css', $name);
     }
 
     /**
      * @kind accessorFunction
      * @name frontend_js_file
-     * @return int|void
+     * @return string|null
      */
     public static function getFrontendJsFile($name)
     {
-        return self::getFileName(Paths::get('static.frontend.dist.js'), $name);
+        return self::getStaticFile('static.frontend.dist.js', $name);
     }
 
     /**
      * @kind accessorFunction
      * @name backend_css_file
-     * @return int|void
+     * @return string|null
      */
     public static function getBackendCssFile($name)
     {
-        return self::getFileName(Paths::get('static.backend.dist.css'), $name);
+        return self::getStaticFile('static.backend.dist.css', $name);
     }
 
     /**
      * @kind accessorFunction
      * @name backend_js_file
-     * @return int|void
+     * @return string|null
      */
     public static function getBackendJsFile($name)
     {
-        return self::getFileName(Paths::get('static.backend.dist.js'), $name);
+        return self::getStaticFile('static.backend.dist.js', $name);
+    }
+
+    /**
+     * @kind accessorFunction
+     * @name static_file
+     * @return string|null
+     */
+    public static function getStaticFile($path, $name)
+    {
+        return self::getFileName(Paths::get($path), $name);
     }
 
     public static function getFileName($dir, $name)
@@ -76,5 +86,6 @@ class StaticLibrary extends TemplateLibrary
                 }
             }
         }
+        return null;
     }
 }
