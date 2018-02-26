@@ -5,7 +5,7 @@
         </option>
     {/if}
     {foreach $field->choices as $key => $name}
-        {var $selected = $.php.is_array($value) ? ($key|in:$value) : ($key == $value)}
+        {var $selected = $.php.is_array($value) ? ($key in list $value) : ($key == $value)}
         <option value="{$key}" {if $selected}selected="selected"{/if}>
             {$name}
         </option>
