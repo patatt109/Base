@@ -84,7 +84,7 @@
         {foreach $trace as $item}
             <div class="file">
                 <table class="info">
-                    {if $item.trace and $item.trace.class}
+                    {if isset($item.trace.class)}
                         <tr>
                             <td class="name">
                                 Class:
