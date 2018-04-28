@@ -14,6 +14,7 @@
 
 namespace Modules\Base\TemplateLibraries;
 
+use Phact\Helpers\Paths;
 use Phact\Main\Phact;
 use Phact\Pagination\Pagination;
 use Phact\Template\Renderer;
@@ -24,6 +25,8 @@ class CommonLibrary extends TemplateLibrary
     use Renderer;
 
     /**
+     * Render breadcrumbs list
+     *
      * @name render_breadcrumbs
      * @kind function
      * @return string
@@ -39,6 +42,8 @@ class CommonLibrary extends TemplateLibrary
     }
 
     /**
+     * Render flash messages
+     *
      * @name render_flash
      * @kind function
      * @return string
@@ -53,6 +58,8 @@ class CommonLibrary extends TemplateLibrary
     }
 
     /**
+     * Render icon by template
+     *
      * @name icon
      * @kind function
      * @return string
@@ -60,12 +67,34 @@ class CommonLibrary extends TemplateLibrary
     public static function icon($params)
     {
         $name = isset($params[0]) ? $params[0] : '';
-        return self::renderTemplate('base/_icon.tpl', [
+        $template = isset($params[1]) ? $params[1] : 'base/_icon.tpl';
+        return self::renderTemplate($template, [
             'name' => $name
         ]);
     }
 
     /**
+     * Insert svg icon
+     *
+     * @name svg_icon
+     * @kind function
+     * @return string
+     */
+    public static function svgIcon($params)
+    {
+        $name = isset($params[0]) ? $params[0] : '';
+        $path = isset($params[1]) ? $params[1] : 'www.static.frontend.svg';
+        $iconPath = Paths::file("{$path}.{$name}", ['svg']);
+        if ($iconPath) {
+            $info = file_get_contents($iconPath);
+            return preg_replace('/<\?.*?\?>/', '', $info);
+        }
+        return "";
+    }
+
+    /**
+     * Build current url with required GET parameters
+     *
      * @name build_url
      * @kind function
      * @return string
@@ -81,6 +110,8 @@ class CommonLibrary extends TemplateLibrary
     }
 
     /**
+     * Creates pager
+     *
      * @name pager
      * @kind accessorFunction
      * @return Pagination
@@ -91,6 +122,8 @@ class CommonLibrary extends TemplateLibrary
     }
 
     /**
+     * Check debug mode
+     *
      * @name is_debug
      * @kind accessorProperty
      * @return bool

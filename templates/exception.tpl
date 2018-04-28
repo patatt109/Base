@@ -32,6 +32,10 @@
             color: #c50303;
         }
 
+        a {
+            color: #c50303;
+        }
+
         .file {
             margin-bottom: 30px;
         }
@@ -67,6 +71,37 @@
         table.info .name {
             font-weight: bold;
         }
+
+        table.args {
+            margin-bottom: 20px;
+        }
+
+        table.args .name {
+            font-weight: bold;
+            padding-right: 10px;
+        }
+
+        table.args .arg {
+            font-size: 80%;
+            color: #999;
+        }
+
+        .pre {
+            font-size: 10px;
+            line-height: 1;
+        }
+
+        .pre-block .pre {
+            display: none;
+        }
+
+        .pre-block.show .pre {
+            display: block;
+        }
+
+        .pre-block.show .pre-link {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -81,7 +116,7 @@
         </div>
 
 
-        {foreach $trace as $item}
+        {foreach $trace as $traceKey => $item}
             <div class="file">
                 <table class="info">
                     {if isset($item.trace.class)}
@@ -103,6 +138,29 @@
                         </td>
                     </tr>
                 </table>
+                {if isset($item.trace.args) && $item.trace.args}
+                    <table class="args">
+                        {foreach $item.trace.args as $argKey => $arg}
+                            <tr class="arg">
+                                <td class="name">
+                                    Arg #{$argKey}:
+                                </td>
+                                <td class="value">
+                                    {if $.php.is_array($arg)}
+                                        <div class="pre-block" id="pre-{$traceKey}-{$argKey}">
+                                            <a class="pre-link" href="javascript:void(0);" onclick="showPre('pre-{$traceKey}-{$argKey}')">
+                                                Array (show)
+                                            </a>
+                                            <pre class="pre">{$.php.print_r($arg)}</pre>
+                                        </div>
+                                    {else}
+                                        {$arg}
+                                    {/if}
+                                </td>
+                            </tr>
+                        {/foreach}
+                    </table>
+                {/if}
                 <table class="lines">
                     {foreach $item.itemLines as $number => $line}
                         <tr {if $item.trace.line - 1 == $number}class="highlight" {/if}>
@@ -118,5 +176,11 @@
             </div>
         {/foreach}
     </div>
+    <script type="text/javascript">
+        function showPre(id) {
+            var element = document.getElementById(id);
+            element.classList.add("show");
+        }
+    </script>
 </body>
 </html>
