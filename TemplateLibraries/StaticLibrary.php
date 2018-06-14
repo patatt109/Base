@@ -19,6 +19,11 @@ use Phact\Helpers\Paths;
 use Phact\Template\Renderer;
 use Phact\Template\TemplateLibrary;
 
+/**
+ * Class StaticLibrary
+ * @package Modules\Base\TemplateLibraries
+ * @deprecated Please, use AssetsLibrary from Assets module
+ */
 class StaticLibrary extends TemplateLibrary
 {
     use Renderer;
