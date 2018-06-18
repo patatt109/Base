@@ -130,6 +130,6 @@ class CommonLibrary extends TemplateLibrary
      */
     public static function isDebug()
     {
-        return defined('DEBUG') && DEBUG;
+        return defined('PHACT_DEBUG') && PHACT_DEBUG;
     }
 }
