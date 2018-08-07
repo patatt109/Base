@@ -31,12 +31,12 @@ class DbCommand extends Command
 
     public function handle($arguments = [])
     {
-        $modulesPath = Paths::get('Modules');
-        $activeModules = Phact::app()->getModulesList();
+        $activeModules = Phact::app()->getModulesConfig();
         $classes = [];
         $tableManager = new TableManager();
-        foreach ($activeModules as $module) {
-            $path = implode(DIRECTORY_SEPARATOR, [$modulesPath, $module, $this->modelsFolder]);
+        foreach ($activeModules as $module => $config) {
+            $moduleClass = $config['class'];
+            $path = implode(DIRECTORY_SEPARATOR, [$moduleClass::getPath(), $this->modelsFolder]);
             if (is_dir($path)) {
                 foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path)) as $filename)
                 {

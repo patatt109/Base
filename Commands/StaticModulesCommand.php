@@ -48,10 +48,10 @@ class StaticModulesCommand extends Command
 
     public function copy($destination)
     {
-        $modulesPath = Paths::get('Modules');
-        $activeModules = Phact::app()->getModulesList();
-        foreach ($activeModules as $module) {
-            $path = implode(DIRECTORY_SEPARATOR, [$modulesPath, $module, $this->staticDirectory]);
+        $activeModules = Phact::app()->getModulesConfig();
+        foreach ($activeModules as $module => $config) {
+            $moduleClass = $config['class'];
+            $path = implode(DIRECTORY_SEPARATOR, [$moduleClass::getPath(), $this->staticDirectory]);
             if (is_dir($path)) {
                 $moduleDestination = $destination . DIRECTORY_SEPARATOR . $module;
                 mkdir($moduleDestination);
