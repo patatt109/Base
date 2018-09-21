@@ -1,4 +1,4 @@
-{if $field->multiple}<input type="hidden" name="{$name}" id="{$id}-empty" value="">{/if}
+{if $field->multiple}<input type="hidden" name="{$field->getHtmlBaseName()}" id="{$id}-empty" value="">{/if}
 <select name="{$name}" id="{$id}" {if $field->multiple}multiple="multiple"{/if} {raw $html}>
     {if $field->emptyText}
         <option value="">

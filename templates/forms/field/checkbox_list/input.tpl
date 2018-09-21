@@ -1,4 +1,4 @@
-<input type="hidden" name="{$name}" id="{$id}-empty" value="">
+<input type="hidden" name="{$field->getHtmlBaseName()}" id="{$id}-empty" value="">
 <ul class="checkbox-list">
     {foreach $field->choices as $key => $title}
         <li>
