@@ -1,0 +1,26 @@
+{
+  "name": "phact-cmf-modules/base",
+  "homepage": "https://github.com/phact-cmf-modules/Base",
+  "description": "Base module for phact CMF",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Modules\\Base\\": ""
+    }
+  },
+  "require": {
+    "php": ">=5.6"
+  },
+  "authors": [
+    {
+      "name": "Anton Okulov",
+      "email": "qantus@mail.ru",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "email": "qantus@mail.ru",
+    "issues": "https://github.com/phact-cmf-modules/Base/issues"
+  }
+}
