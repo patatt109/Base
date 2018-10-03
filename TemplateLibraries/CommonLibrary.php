@@ -7,16 +7,17 @@
  * @author Okulov Anton
  * @email qantus@mail.ru
  * @version 1.0
- * @company HashStudio
- * @site http://hashstudio.ru
  * @date 08/09/16 07:25
  */
 
 namespace Modules\Base\TemplateLibraries;
 
-use Phact\Helpers\Paths;
+use Phact\Components\BreadcrumbsInterface;
+use Phact\Components\FlashInterface;
+use Phact\Components\PathInterface;
 use Phact\Main\Phact;
 use Phact\Pagination\Pagination;
+use Phact\Request\HttpRequestInterface;
 use Phact\Template\Renderer;
 use Phact\Template\TemplateLibrary;
 
@@ -36,8 +37,11 @@ class CommonLibrary extends TemplateLibrary
         $template = isset($params['template']) ? $params['template'] : '_breadcrumbs.tpl';
         $name = isset($params['name']) ? $params['name'] : 'DEFAULT';
 
+        /** @var BreadcrumbsInterface $breadcrumbs */
+        $breadcrumbs = Phact::app()->getComponent(BreadcrumbsInterface::class);
+
         return self::renderTemplate($template, [
-            'breadcrumbs' => Phact::app()->breadcrumbs->get($name)
+            'breadcrumbs' => $breadcrumbs->get($name)
         ]);
     }
 
@@ -52,8 +56,11 @@ class CommonLibrary extends TemplateLibrary
     {
         $template = isset($params['template']) ? $params['template'] : '_flash.tpl';
 
+        /** @var FlashInterface $flash */
+        $flash = Phact::app()->getComponent(FlashInterface::class);
+
         return self::renderTemplate($template, [
-            'messages' => Phact::app()->flash->read()
+            'messages' => $flash->read()
         ]);
     }
 
@@ -84,7 +91,9 @@ class CommonLibrary extends TemplateLibrary
     {
         $name = isset($params[0]) ? $params[0] : '';
         $path = isset($params[1]) ? $params[1] : 'www.static.frontend.svg';
-        $iconPath = Paths::file("{$path}.{$name}", ['svg']);
+        /** @var PathInterface $paths */
+        $paths = Phact::app()->getComponent(PathInterface::class);
+        $iconPath = $paths->file("{$path}.{$name}", ['svg']);
         if ($iconPath) {
             $info = file_get_contents($iconPath);
             return preg_replace('/<\?.*?\?>/', '', $info);
@@ -101,12 +110,13 @@ class CommonLibrary extends TemplateLibrary
      */
     public static function buildUrl($params)
     {
+        $request = Phact::app()->getComponent(HttpRequestInterface::class);
         $data = isset($params['data']) ? $params['data'] : [];
-        $query = Phact::app()->request->getQueryArray();
+        $query = $request->getQueryArray();
         foreach ($data as $key => $value) {
             $query[$key] = $value;
         }
-        return Phact::app()->request->getPath() . '?' . http_build_query($query);
+        return $request->getPath() . '?' . http_build_query($query);
     }
 
     /**

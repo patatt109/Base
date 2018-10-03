@@ -7,16 +7,15 @@
  * @author Okulov Anton
  * @email qantus@mail.ru
  * @version 1.0
- * @company HashStudio
- * @site http://hashstudio.ru
  * @date 12/12/16 16:08
  */
 
 namespace Modules\Base\Commands;
 
 use FilesystemIterator;
+use Phact\Application\ModulesInterface;
 use Phact\Commands\Command;
-use Phact\Helpers\Paths;
+use Phact\Components\PathInterface;
 use Phact\Main\Phact;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -25,9 +24,25 @@ class StaticModulesCommand extends Command
 {
     public $staticDirectory = 'static';
 
+    /**
+     * @var ModulesInterface
+     */
+    protected $_modules;
+
+    /**
+     * @var PathInterface
+     */
+    protected $_path;
+
+    public function __construct(ModulesInterface $modules, PathInterface $path)
+    {
+        $this->_modules = $modules;
+        $this->_path = $path;
+    }
+
     public function handle($arguments = [])
     {
-        $destination = Paths::get('static_modules');
+        $destination = $this->_path->get('static_modules');
         if (!is_dir($destination)) {
             if (!mkdir($destination)) {
                 throw new \Exception("Destination directory for static files from modules ('{$destination}') does not exists");
@@ -48,12 +63,10 @@ class StaticModulesCommand extends Command
 
     public function copy($destination)
     {
-        $activeModules = Phact::app()->getModulesConfig();
-        foreach ($activeModules as $module => $config) {
-            $moduleClass = $config['class'];
+        foreach ($this->_modules->getModulesClasses() as $moduleName => $moduleClass) {
             $path = implode(DIRECTORY_SEPARATOR, [$moduleClass::getPath(), $this->staticDirectory]);
             if (is_dir($path)) {
-                $moduleDestination = $destination . DIRECTORY_SEPARATOR . $module;
+                $moduleDestination = $destination . DIRECTORY_SEPARATOR . $moduleName;
                 mkdir($moduleDestination);
                 foreach ($iterator = new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($path,\RecursiveDirectoryIterator::SKIP_DOTS),

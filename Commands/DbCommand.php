@@ -7,15 +7,13 @@
  * @author Okulov Anton
  * @email qantus@mail.ru
  * @version 1.0
- * @company HashStudio
- * @site http://hashstudio.ru
  * @date 12/12/16 16:08
  */
 
 namespace Modules\Base\Commands;
 
+use Phact\Application\ModulesInterface;
 use Phact\Commands\Command;
-use Phact\Helpers\Paths;
 use Phact\Main\Phact;
 use Phact\Orm\Model;
 use Phact\Orm\TableManager;
@@ -29,20 +27,18 @@ class DbCommand extends Command
 
     public $silent = false;
 
-    public function handle($arguments = [])
+    public function handle($arguments = [], ModulesInterface $modules)
     {
-        $activeModules = Phact::app()->getModulesConfig();
         $classes = [];
         $tableManager = new TableManager();
-        foreach ($activeModules as $module => $config) {
-            $moduleClass = $config['class'];
+        foreach ($modules->getModulesClasses() as $moduleName => $moduleClass) {
             $path = implode(DIRECTORY_SEPARATOR, [$moduleClass::getPath(), $this->modelsFolder]);
             if (is_dir($path)) {
                 foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path)) as $filename)
                 {
                     if ($filename->isDir()) continue;
                     $name = $filename->getBasename('.php');
-                    $classes[] = implode('\\', ['Modules', $module, $this->modelsFolder, $name]);
+                    $classes[] = implode('\\', ['Modules', $moduleName, $this->modelsFolder, $name]);
                 }
             }
         }
@@ -60,13 +56,9 @@ class DbCommand extends Command
                 echo $this->color($model->className(), 'green', 'black');
                 echo ' ';
             }
-            $result = $tableManager->createModelTable($model);
+            $tableManager->createModelTable($model);
             if (!$this->silent) {
-                if ($result->errorCode() == '00000') {
-                    echo $this->color('✓', 'grey', 'black');
-                } else {
-                    echo $this->color('✓', 'red', 'black');
-                }
+                echo $this->color('✓', 'grey', 'black');
                 echo PHP_EOL;
             }
         }
@@ -77,9 +69,9 @@ class DbCommand extends Command
         return 'Sync models with database';
     }
 
-    public static function sync()
+    public static function sync(ModulesInterface $modules)
     {
-        $command = new DbCommand();
+        $command = new DbCommand($modules);
         $command->silent = true;
         $command->handle();
     }
