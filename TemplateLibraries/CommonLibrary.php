@@ -15,15 +15,17 @@ namespace Modules\Base\TemplateLibraries;
 use Phact\Components\BreadcrumbsInterface;
 use Phact\Components\FlashInterface;
 use Phact\Components\PathInterface;
+use Phact\Di\ComponentFetcher;
 use Phact\Main\Phact;
 use Phact\Pagination\Pagination;
 use Phact\Request\HttpRequestInterface;
 use Phact\Template\Renderer;
+use Phact\Template\RendererInterface;
 use Phact\Template\TemplateLibrary;
 
 class CommonLibrary extends TemplateLibrary
 {
-    use Renderer;
+    use ComponentFetcher;
 
     /**
      * Render breadcrumbs list
@@ -38,11 +40,14 @@ class CommonLibrary extends TemplateLibrary
         $name = isset($params['name']) ? $params['name'] : 'DEFAULT';
 
         /** @var BreadcrumbsInterface $breadcrumbs */
-        $breadcrumbs = Phact::app()->getComponent(BreadcrumbsInterface::class);
+        $breadcrumbs = self::fetchComponent(BreadcrumbsInterface::class);
 
-        return self::renderTemplate($template, [
-            'breadcrumbs' => $breadcrumbs->get($name)
-        ]);
+        if ($breadcrumbs) {
+            return self::renderTemplate($template, [
+                'breadcrumbs' => $breadcrumbs->get($name)
+            ]);
+        }
+        return '';
     }
 
     /**
@@ -57,11 +62,13 @@ class CommonLibrary extends TemplateLibrary
         $template = isset($params['template']) ? $params['template'] : '_flash.tpl';
 
         /** @var FlashInterface $flash */
-        $flash = Phact::app()->getComponent(FlashInterface::class);
+        $flash = self::fetchComponent(FlashInterface::class);
 
-        return self::renderTemplate($template, [
-            'messages' => $flash->read()
-        ]);
+        if ($flash) {
+            return self::renderTemplate($template, [
+                'messages' => $flash->read()
+            ]);
+        }
     }
 
     /**
@@ -92,9 +99,8 @@ class CommonLibrary extends TemplateLibrary
         $name = isset($params[0]) ? $params[0] : '';
         $path = isset($params[1]) ? $params[1] : 'www.static.frontend.svg';
         /** @var PathInterface $paths */
-        $paths = Phact::app()->getComponent(PathInterface::class);
-        $iconPath = $paths->file("{$path}.{$name}", ['svg']);
-        if ($iconPath) {
+        $paths = self::fetchComponent(PathInterface::class);
+        if ($paths && ($iconPath = $paths->file("{$path}.{$name}", ['svg']))) {
             $info = file_get_contents($iconPath);
             return preg_replace('/<\?.*?\?>/', '', $info);
         }
@@ -110,13 +116,17 @@ class CommonLibrary extends TemplateLibrary
      */
     public static function buildUrl($params)
     {
-        $request = Phact::app()->getComponent(HttpRequestInterface::class);
-        $data = isset($params['data']) ? $params['data'] : [];
-        $query = $request->getQueryArray();
-        foreach ($data as $key => $value) {
-            $query[$key] = $value;
+        /** @var HttpRequestInterface $request */
+        $request = self::fetchComponent(HttpRequestInterface::class);
+        if ($request) {
+            $data = isset($params['data']) ? $params['data'] : [];
+            $query = $request->getQueryArray();
+            foreach ($data as $key => $value) {
+                $query[$key] = $value;
+            }
+            return $request->getPath() . '?' . http_build_query($query);
         }
-        return $request->getPath() . '?' . http_build_query($query);
+        return "";
     }
 
     /**
@@ -141,5 +151,21 @@ class CommonLibrary extends TemplateLibrary
     public static function isDebug()
     {
         return defined('PHACT_DEBUG') && PHACT_DEBUG;
+    }
+
+    /**
+     * Render template
+     *
+     * @param $template
+     * @param $data
+     * @return mixed
+     */
+    public static function renderTemplate($template, $data)
+    {
+        /** @var RendererInterface $renderer */
+        $renderer = self::fetchComponent(RendererInterface::class);
+        if ($renderer) {
+            return $renderer->render($template, $data);
+        }
     }
 }

@@ -146,10 +146,14 @@
                                     Arg #{$argKey}:
                                 </td>
                                 <td class="value">
-                                    {if $.php.is_array($arg)}
+                                    {if $.php.is_array($arg) || $.php.is_object($arg)}
                                         <div class="pre-block" id="pre-{$traceKey}-{$argKey}">
                                             <a class="pre-link" href="javascript:void(0);" onclick="showPre('pre-{$traceKey}-{$argKey}')">
-                                                Array (show)
+                                                {if $.php.is_array($arg)}
+                                                    Array (show)
+                                                {elseif $.php.is_object($arg)}
+                                                    Object (show)
+                                                {/if}
                                             </a>
                                             <pre class="pre">{$.php.print_r($arg)}</pre>
                                         </div>
