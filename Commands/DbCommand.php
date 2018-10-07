@@ -31,14 +31,14 @@ class DbCommand extends Command
     {
         $classes = [];
         $tableManager = new TableManager();
-        foreach ($modules->getModulesClasses() as $moduleName => $moduleClass) {
-            $path = implode(DIRECTORY_SEPARATOR, [$moduleClass::getPath(), $this->modelsFolder]);
+        foreach ($modules->getModules() as $moduleName => $module) {
+            $path = implode(DIRECTORY_SEPARATOR, [$module->getPath(), $this->modelsFolder]);
             if (is_dir($path)) {
                 foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path)) as $filename)
                 {
                     if ($filename->isDir()) continue;
                     $name = $filename->getBasename('.php');
-                    $classes[] = implode('\\', ['Modules', $moduleName, $this->modelsFolder, $name]);
+                    $classes[] = implode('\\', [$module::classNamespace(), $this->modelsFolder, $name]);
                 }
             }
         }
@@ -67,12 +67,5 @@ class DbCommand extends Command
     public function getDescription()
     {
         return 'Sync models with database';
-    }
-
-    public static function sync(ModulesInterface $modules)
-    {
-        $command = new DbCommand($modules);
-        $command->silent = true;
-        $command->handle();
     }
 }
