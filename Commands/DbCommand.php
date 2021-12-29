@@ -27,7 +27,7 @@ class DbCommand extends Command
 
     public $silent = false;
 
-    public function handle($arguments = [], ModulesInterface $modules)
+    public function handle(array $arguments, ModulesInterface $modules)
     {
         $classes = [];
         $tableManager = new TableManager();
