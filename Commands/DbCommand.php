@@ -62,6 +62,36 @@ class DbCommand extends Command
                 echo PHP_EOL;
             }
         }
+        if (!$this->silent) {
+            echo $this->color('Handle constraints', 'blue', 'black');
+            echo PHP_EOL;
+        }
+        foreach ($models as $model) {
+            if (!$this->silent) {
+                echo $this->color($model->className(), 'green', 'black');
+                echo ' ';
+            }
+            $tableManager->createModelTable($model, true);
+            if (!$this->silent) {
+                echo $this->color('✓', 'grey', 'black');
+                echo PHP_EOL;
+            }
+        }
+        if (!$this->silent) {
+            echo $this->color('Create ManyToMany tables', 'blue', 'black');
+            echo PHP_EOL;
+        }
+        foreach ($models as $model) {
+            if (!$this->silent) {
+                echo $this->color($model->className(), 'green', 'black');
+                echo ' ';
+            }
+            $tableManager->createM2MTables($model);
+            if (!$this->silent) {
+                echo $this->color('✓', 'grey', 'black');
+                echo PHP_EOL;
+            }
+        }
     }
 
     public function getDescription()
